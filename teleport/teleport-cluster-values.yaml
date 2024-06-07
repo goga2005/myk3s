@@ -1,0 +1,14 @@
+clusterName: teleport-k3s-dev.al.mt.gov.br
+proxyListenerMode: multiplex
+acme: false
+acmeEmail: douglas.miyashita@al.mt.gov.br
+service:
+  type: ClusterIP
+ingress:
+  enabled: true
+annotations:
+  ingress:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+tls:
+  existingSecretName: al-mt-gov-br-certs

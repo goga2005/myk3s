@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+spec:
+  ports:
+  - port: 3306 # if target port is not set it will use the same value as port
+  selector:
+    app: mariadb
