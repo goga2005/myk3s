@@ -1,0 +1,12 @@
+{{- if .Values.environment.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "web.configmap.environment" . }}
+  labels:
+    {{- include "web.labels" . | nindent 4 }}
+data:
+  HOST: "{{ .Values.environment.host }}"
+  UPSTREAM: "{{ .Values.environment.upstream }}.{{ .Release.Namespace }}.svc.cluster.local"
+  PORT: "{{ .Values.environment.port }}"
+{{- end }}

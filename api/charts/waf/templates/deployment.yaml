@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "waf.fullname" . }}
+  labels:
+    {{- include "waf.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "waf.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "waf.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "waf.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "waf.configmap.environment" . }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: https
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: template
+              mountPath: /etc/nginx/templates/conf.d/
+            - name: setup
+              mountPath: /etc/modsecurity.d/almt/
+            - name: error
+              mountPath: /etc/nginx/html/
+            - name: rules
+              mountPath: /etc/modsecurity.d/owasp-crs/rules/almt/
+            {{- if .Values.tls.enabled }}
+            - name: tls
+              mountPath: {{ .Values.tls.path }}
+              readOnly: true
+            {{- end }}
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: template
+          configMap:
+            name: {{ include "waf.configmap.files" . }}
+            items:
+              - key: default.conf.template
+                path: default.conf.template
+        - name: setup
+          configMap:
+            name: {{ include "waf.configmap.files" . }}
+            items:
+              - key: setup.conf
+                path: setup.conf
+        - name: error
+          configMap:
+            name: {{ include "waf.configmap.files" . }}
+            items:
+              - key: error.html
+                path: error.html
+        - name: rules
+          configMap:
+            name: {{ include "waf.configmap.files" . }}
+            items:
+              - key: REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
+                path: REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
+              - key: RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
+                path: RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
+              - key: RULES-REMOVE.conf
+                path: RULES-REMOVE.conf
+        {{- if .Values.tls.enabled }}
+        - name: tls
+          secret:
+            secretName: {{ include "waf.secret.tls" . }}
+        {{- end }}
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

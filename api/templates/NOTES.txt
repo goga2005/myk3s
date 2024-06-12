@@ -1,0 +1,31 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }} and namespaced {{ .Release.Namespace }}.
+
+To learn more about the release, try:
+
+1. Check your 'helm' release with:
+
+  $ helm status {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+  $ helm get all {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+
+2. Watch your release with:
+  
+  $ watch -n 1 kubectl get all --namespace {{ .Release.Namespace }} --selector 'app.kubernetes.io/instance={{ .Release.Name }}'
+
+3. Inspect release's resources with:
+
+  $ kubectl get all --namespace {{ .Release.Namespace }} --selector 'app.kubernetes.io/instance={{ .Release.Name }}'
+  $ kubectl get configmap --namespace {{ .Release.Namespace }} --selector 'app.kubernetes.io/instance={{ .Release.Name }}'
+  $ kubectl get ingress --namespace {{ .Release.Namespace }} --selector 'app.kubernetes.io/instance={{ .Release.Name }}'
+  $ kubectl get networkpolicies --namespace {{ .Release.Namespace }} --selector 'app.kubernetes.io/instance={{ .Release.Name }}'
+  $ kubectl get pv --namespace {{ .Release.Namespace }} --selector 'app.kubernetes.io/instance={{ .Release.Name }}'
+  $ kubectl get pvc --namespace {{ .Release.Namespace }} --selector 'app.kubernetes.io/instance={{ .Release.Name }}'
+  $ kubectl get secret --namespace {{ .Release.Namespace }} --selector 'app.kubernetes.io/instance={{ .Release.Name }}'
+
+4. Show all resources with:
+
+  $ for resource in all configmap ingress networkpolicies pv pvc secret; do \
+        echo "Show '${resource}' resources ..." \
+        && kubectl get "${resource}" --namespace {{ .Release.Namespace }} --selector 'app.kubernetes.io/instance={{ .Release.Name }}'; \
+    done;

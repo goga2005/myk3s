@@ -5,12 +5,17 @@ metadata:
   namespace: kube-system
 spec:
   valuesContent: |-
+    hostNetwork: true
     additionalArguments:
       - "--api"
       - "--api.dashboard=true"
       - "--api.insecure=true"
       - "--log.level=DEBUG"
       - "--serversTransport.insecureSkipVerify=true"
+      - "--accesslog=true"
+    logs:
+      access:
+        addInternals: true
     ports:
       traefik:
         expose: true

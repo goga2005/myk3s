@@ -1,0 +1,19 @@
+{{- if .Values.environment.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "waf.configmap.environment" . }}
+  labels:
+    {{- include "waf.labels" . | nindent 4 }}
+data:
+  PROXY: "1"
+  BACKEND: "{{ .Values.environment.upstream }}.{{ .Release.Namespace }}.svc.cluster.local"
+  PARANOIA: "{{ .Values.environment.paranoia }}"
+  MODSEC_RULE_ENGINE: "{{ .Values.environment.engine }}"
+  MODSEC_REQ_BODY_LIMIT: "{{ .Values.environment.limits.request }}"
+  {{- if .Values.tls.enabled }}
+  NGINX_ALWAYS_TLS_REDIRECT: "on"
+  PROXY_SSL_CERT: "{{ .Values.tls.path }}/tls.crt"
+  PROXY_SSL_CERT_KEY: "{{ .Values.tls.path }}/tls.key"
+  {{- end }}
+{{- end }}

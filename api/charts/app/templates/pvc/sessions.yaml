@@ -1,0 +1,21 @@
+{{- if and .Values.persistence.sessions.enabled (not .Values.persistence.sessions.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "app.fullname" . }}-sessions
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  {{- with .Values.persistence.sessions.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ if .Values.persistence.sessions.accessMode }}{{ .Values.persistence.sessions.accessMode | quote }}{{- else }}{{ .Values.persistence.accessMode | quote }}{{- end }}
+  resources:
+    requests:
+      storage: {{ if .Values.persistence.sessions.size }}{{ .Values.persistence.sessions.size | quote }}{{- else }}{{ .Values.persistence.size | quote }}{{- end }}
+  {{- if or .Values.persistence.storageClass .Values.persistence.sessions.storageClass }}
+  storageClassName: {{ (coalesce .Values.persistence.sessions.storageClass .Values.persistence.storageClass) | quote }}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,19 @@
+# Override app subchart values
+app:
+  image:
+    tag: "pre-stage"
+
+# Override web subchart values
+web:
+  image:
+    tag: "pre-stage"
+  environment:
+    host: api-dev
+
+waf:
+  ingress:
+    hosts:
+      - host: api-dev.al.mt.gov.br
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
