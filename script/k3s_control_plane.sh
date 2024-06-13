@@ -4,35 +4,11 @@ sudo apt-get upgrade --yes
 
 sudo apt-get install curl gpg apt-transport-https nfs-common vim --yes
 
-curl -sfL https://get.k3s.io | sh -s - server --write-kubeconfig-mode "0644" --tls-san 172.31.255.100 --cluster-cidr 172.26.0.0/16 --service-cidr 172.27.0.0/16 --cluster-init
+mkdir -p /var/lib/rancher/k3s/server/manifests
+touch /var/lib/rancher/k3s/server/manifests/traefik.yaml.skip
+
+curl -sfL https://get.k3s.io | sh -s - server --write-kubeconfig-mode "0644" --disable servicelb --tls-san 172.31.255.100 --cluster-cidr 172.26.0.0/16 --service-cidr 172.27.0.0/16 --cluster-init
 echo "KUBECONFIG=/etc/rancher/k3s/k3s.yaml" | sudo tee --append /etc/environment
-cat <<EOF | sudo tee /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
-apiVersion: helm.cattle.io/v1
-kind: HelmChartConfig
-metadata:
-  name: traefik
-  namespace: kube-system
-spec:
-  valuesContent: |-
-    additionalArguments:
-      - "--api"
-      - "--api.dashboard=true"
-      - "--api.insecure=true"
-      - "--log.level=DEBUG"
-      - "--serversTransport.insecureSkipVerify=true"
-    ports:
-      traefik:
-        expose: true
-      websecure:
-        tls:
-          enabled: true
-      web:
-        redirectTo:
-          port: websecure
-    providers:
-      kubernetesCRD:
-        allowCrossNamespace: true
-EOF
 
 # For Vagrant re-runs, check if there is existing configs in the location and delete it for saving new configuration.
 mkdir --parents /vagrant/configs
