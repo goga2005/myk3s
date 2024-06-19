@@ -5,31 +5,33 @@ metadata:
   namespace: kube-system
 spec:
   valuesContent: |-
-    hostNetwork: true
     additionalArguments:
       - "--api"
       - "--api.dashboard=true"
       - "--api.insecure=true"
       - "--log.level=DEBUG"
       - "--serversTransport.insecureSkipVerify=true"
-      - "--accesslog=true"
-    logs:
-      access:
-        addInternals: true
+    service:
+      spec:
+        externalTrafficPolicy: Local
+        allocateLoadBalancerNodePorts: false
     ports:
       traefik:
         expose: true
       websecure:
+        forwardedHeaders:
+          insecure: true
+        proxyProtocol:
+          insecure: true
         tls:
           enabled: true
       web:
+        forwardedHeaders:
+          insecure: true
+        proxyProtocol:
+          insecure: true
         redirectTo:
           port: websecure
-      mysql:
-        port: 3306
-        expose: true
-        exposedPort: 3306
-        protocol: TCP
     providers:
       kubernetesCRD:
         allowCrossNamespace: true

@@ -1,0 +1,28 @@
+gitlab-runner   gitlab-runner-76ccd79875-2c9vb                    1/1     Running   0               4d7h
+kube-system     coredns-6799fbcd5-l5bhk                           1/1     Running   0               4d7h
+kube-system     csi-nfs-controller-67fdcb9b4f-4qz5p               4/4     Running   0               4d7h
+kube-system     csi-nfs-node-45h6w                                3/3     Running   9 (2d4h ago)    79d
+kube-system     csi-nfs-node-fpnw6                                3/3     Running   9 (2d4h ago)    79d
+kube-system     csi-nfs-node-htdp9                                3/3     Running   6 (2d ago)      79d
+kube-system     csi-nfs-node-kk9j7                                3/3     Running   6 (2d4h ago)    79d
+kube-system     csi-nfs-node-qm76l                                3/3     Running   6 (2d4h ago)    79d
+kube-system     csi-nfs-node-x8snt                                3/3     Running   1056 (2d ago)   79d
+kube-system     csi-nfs-node-zb262                                3/3     Running   12 (2d4h ago)   79d
+kube-system     local-path-provisioner-6c86858495-mt4mk           1/1     Running   0               4d7h
+kube-system     metrics-server-54fd9b65b-mkvrb                    1/1     Running   0               4d7h
+kube-system     nfs-subdir-external-provisioner-d497b87d4-fv9f8   1/1     Running   0               4d7h
+kube-system     svclb-traefik-5bde2583-5mpnz                      3/3     Running   12 (2d4h ago)   73d
+kube-system     svclb-traefik-5bde2583-8wvdp                      3/3     Running   9 (2d4h ago)    73d
+kube-system     svclb-traefik-5bde2583-lh9rt                      3/3     Running   6 (2d ago)      73d
+kube-system     svclb-traefik-5bde2583-mngh2                      3/3     Running   6 (2d4h ago)    73d
+kube-system     svclb-traefik-5bde2583-tmz9t                      3/3     Running   9 (2d4h ago)    73d
+kube-system     svclb-traefik-5bde2583-wrxnn                      3/3     Running   6 (2d ago)      73d
+kube-system     svclb-traefik-5bde2583-z4pb6                      3/3     Running   6 (2d4h ago)    73d
+kube-system     traefik-bcb4985fd-5tjsz                           1/1     Running   0               4d7h
+nextcloud       nextcloud-866c4c8df5-pfkvw                        2/2     Running   0               4d7h
+nextcloud       nextcloud-866c4c8df5-rx9rb                        2/2     Running   0               4d7h
+nextcloud       nextcloud-redis-master-0                          1/1     Running   0               4d7h
+nextcloud       nextcloud-redis-replicas-0                        1/1     Running   0               4d7h
+nextcloud       nextcloud-redis-replicas-1                        1/1     Running   0               4d7h
+nextcloud       nextcloud-redis-replicas-2                        1/1     Running   0               47h
+portainer       portainer-6c94477f6b-wmkkk                        1/1     Running   0               4d7h

@@ -8,7 +8,8 @@ Vagrant.configure("2") do |config|
         config.vm.define env['name'] do |host|
           host.vm.hostname = env['hostname']
           host.vm.box = env['box']
-          host.vm.network 'private_network', ip: env['ipaddress']
+          # host.vm.network 'private_network', ip: env['ipaddress']
+          host.vm.network "public_network", :bridge => "enp2s0", :use_dhcp_assigned_default_route => true, ip: "10.0.50.104"
           host.vm.disk :disk, size: env['disk'], primary: true
           host.vm.provider 'virtualbox' do |vb|
             vb.name = env['name']

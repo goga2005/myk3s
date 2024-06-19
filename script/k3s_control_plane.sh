@@ -4,8 +4,7 @@ sudo apt-get upgrade --yes
 
 sudo apt-get install curl gpg apt-transport-https nfs-common vim --yes
 
-curl -sfL https://get.k3s.io | sh -s - server --write-kubeconfig-mode "0644" --tls-san 172.31.255.100 --cluster-cidr 172.26.0.0/16 --service-cidr 172.27.0.0/16 --cluster-init
-echo "KUBECONFIG=/etc/rancher/k3s/k3s.yaml" | sudo tee --append /etc/environment
+mkdir -p /var/lib/rancher/k3s/server/manifests
 cat <<EOF | sudo tee /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
 apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
@@ -20,6 +19,10 @@ spec:
       - "--api.insecure=true"
       - "--log.level=DEBUG"
       - "--serversTransport.insecureSkipVerify=true"
+    service:
+      spec:
+        externalTrafficPolicy: Local
+        allocateLoadBalancerNodePorts: false
     ports:
       traefik:
         expose: true
@@ -33,6 +36,9 @@ spec:
       kubernetesCRD:
         allowCrossNamespace: true
 EOF
+
+curl -sfL https://get.k3s.io | sh -s - server --write-kubeconfig-mode "0644" --tls-san 10.0.50.104 --node-external-ip 10.0.50.104 --flannel-external-ip --cluster-cidr 172.26.0.0/16 --service-cidr 172.27.0.0/16 --cluster-init
+echo "KUBECONFIG=/etc/rancher/k3s/k3s.yaml" | sudo tee --append /etc/environment
 
 # For Vagrant re-runs, check if there is existing configs in the location and delete it for saving new configuration.
 mkdir --parents /vagrant/configs
@@ -56,6 +62,8 @@ EOF
 # kubectl apply -f /vagrant/traefik/tls-store.yaml
 # kubectl apply -f /vagrant/traefik/ingress.yaml
 
+# kubectl apply -f /vagrant/whoami/whoami.yml
+
 # sudo apt-get install ufw -y
 # sudo sed -i "s@IPV6=yes@IPV6=no@g" /etc/default/ufw
 # sudo ufw default deny incoming
@@ -63,3 +71,5 @@ EOF
 # sudo ufw enable
 # sudo ufw allow 6443/tcp
 # sudo ufw allow 443/tcp
+
+# /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
