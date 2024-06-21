@@ -11,25 +11,13 @@ spec:
       - "--api.insecure=true"
       - "--log.level=DEBUG"
       - "--serversTransport.insecureSkipVerify=true"
-    service:
-      spec:
-        externalTrafficPolicy: Local
-        allocateLoadBalancerNodePorts: false
     ports:
       traefik:
         expose: true
       websecure:
-        forwardedHeaders:
-          insecure: true
-        proxyProtocol:
-          insecure: true
         tls:
           enabled: true
       web:
-        forwardedHeaders:
-          insecure: true
-        proxyProtocol:
-          insecure: true
         redirectTo:
           port: websecure
     providers:

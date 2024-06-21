@@ -19,10 +19,6 @@ spec:
       - "--api.insecure=true"
       - "--log.level=DEBUG"
       - "--serversTransport.insecureSkipVerify=true"
-    service:
-      spec:
-        externalTrafficPolicy: Local
-        allocateLoadBalancerNodePorts: false
     ports:
       traefik:
         expose: true
@@ -37,7 +33,7 @@ spec:
         allowCrossNamespace: true
 EOF
 
-curl -sfL https://get.k3s.io | sh -s - server --write-kubeconfig-mode "0644" --tls-san 10.0.50.104 --node-external-ip 10.0.50.104 --flannel-external-ip --cluster-cidr 172.26.0.0/16 --service-cidr 172.27.0.0/16 --cluster-init
+curl -sfL https://get.k3s.io | sh -s - server --write-kubeconfig-mode "0644" --flannel-backend=none --disable-network-policy --tls-san 10.0.50.104 --node-external-ip 10.0.50.104 --cluster-cidr 172.26.0.0/16 --service-cidr 172.27.0.0/16 --cluster-init
 echo "KUBECONFIG=/etc/rancher/k3s/k3s.yaml" | sudo tee --append /etc/environment
 
 # For Vagrant re-runs, check if there is existing configs in the location and delete it for saving new configuration.
