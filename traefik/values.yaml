@@ -1,0 +1,23 @@
+additionalArguments:
+  - "--api"
+  - "--api.dashboard=true"
+  - "--api.insecure=true"
+  - "--log.level=DEBUG"
+  - "--serversTransport.insecureSkipVerify=true"
+ports:
+  traefik:
+    expose:
+      default: true
+  websecure:
+    tls:
+      enabled: true
+  web:
+    redirectTo:
+      port: websecure
+providers:
+  kubernetesCRD:
+    allowCrossNamespace: true
+tlsStore:
+  default:
+    defaultCertificate:
+      secretName: al-mt-gov-br-certs

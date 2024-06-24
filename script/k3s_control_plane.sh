@@ -33,7 +33,8 @@ spec:
         allowCrossNamespace: true
 EOF
 
-curl -sfL https://get.k3s.io | sh -s - server --write-kubeconfig-mode "0644" --flannel-backend=none --disable-network-policy --tls-san 10.0.50.104 --node-external-ip 10.0.50.104 --cluster-cidr 172.26.0.0/16 --service-cidr 172.27.0.0/16 --cluster-init
+# curl -sfL https://get.k3s.io | sh -s - server --write-kubeconfig-mode "0644" --flannel-backend=none --disable-network-policy --disable=traefik --tls-san 10.0.50.104 --node-external-ip 10.0.50.104 --cluster-cidr 192.168.0.0/16 --cluster-init
+curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" INSTALL_K3S_EXEC="--flannel-backend=none --cluster-cidr 172.26.0.0/16 --service-cidr 172.27.0.0/16 --tls-san 10.0.50.104 --node-external-ip 10.0.50.104 --disable-network-policy --disable=traefik" sh -
 echo "KUBECONFIG=/etc/rancher/k3s/k3s.yaml" | sudo tee --append /etc/environment
 
 # For Vagrant re-runs, check if there is existing configs in the location and delete it for saving new configuration.
@@ -58,7 +59,7 @@ EOF
 # kubectl apply -f /vagrant/traefik/tls-store.yaml
 # kubectl apply -f /vagrant/traefik/ingress.yaml
 
-# kubectl apply -f /vagrant/whoami/whoami.yml
+# 
 
 # sudo apt-get install ufw -y
 # sudo sed -i "s@IPV6=yes@IPV6=no@g" /etc/default/ufw
